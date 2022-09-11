@@ -1,0 +1,50 @@
+version: "3.2"
+services:
+  rabbitmq2:
+    image: rabbitmq:3-management-alpine
+    hostname: rabbitmq2
+    container_name: 'rabbitmq2'
+    ports:
+    - "5672:5672"
+    - "15672:15672"
+    - "5552:5552"
+    volumes:
+     - $PWD/storage/rabbitmq2:/var/lib/rabbitmq
+    networks:
+    - rabbitmq_net
+  rabbitmq3:
+    image: rabbitmq:3-management-alpine
+    hostname: rabbitmq3
+    container_name: 'rabbitmq3'
+    depends_on:
+    - rabbitmq2
+    links:
+    - rabbitmq2
+    ports:
+    - "5673:5672"
+    - "15673:15672"
+    - "5553:5552"
+    volumes:
+     - $PWD/storage/rabbitmq3:/var/lib/rabbitmq
+    networks:
+    - rabbitmq_net
+  rabbitmq4:
+    image: rabbitmq:3-management-alpine
+    hostname: rabbitmq4
+    container_name: 'rabbitmq4'
+    depends_on:
+    - rabbitmq3
+    links:
+    - rabbitmq2
+    - rabbitmq3
+    ports:
+    - "5674:5672"
+    - "15674:15672"
+    - "5554:5552"
+    volumes:
+     - $PWD/storage/rabbitmq4:/var/lib/rabbitmq
+    networks:
+    - rabbitmq_net
+networks:
+  rabbitmq_net:
+    driver: bridge
